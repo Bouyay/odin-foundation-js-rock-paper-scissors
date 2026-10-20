@@ -61,11 +61,11 @@ function playRound(humanChoice, computerChoice)
     console.log("Human choioce: " + humanChoice);
     console.log("Computer choioce: " + computerChoice);
 
-    switch (humanChoice)
+    switch (humanChoice.toLowerCase())
     {
         case STRING_ROCK.toLowerCase():
         {
-            switch (computerChoice)
+            switch (computerChoice.toLowerCase())
             {
                 case STRING_PAPER.toLowerCase():
                 {
@@ -91,7 +91,7 @@ function playRound(humanChoice, computerChoice)
 
         case STRING_PAPER.toLowerCase():
         {
-            switch (computerChoice)
+            switch (computerChoice.toLowerCase())
             {
                 case STRING_SCISSORS.toLowerCase():
                 {
@@ -103,7 +103,7 @@ function playRound(humanChoice, computerChoice)
                 case STRING_ROCK.toLowerCase():
                 {
                     string = STRING_WIN + STRING_PAPER_BEAT_ROCK;
-                    humanScore++;
+                    score++;
                     break;
                 }
 
@@ -117,7 +117,7 @@ function playRound(humanChoice, computerChoice)
 
         case STRING_SCISSORS.toLowerCase():
         {
-            switch (computerChoice)
+            switch (computerChoice.toLowerCase())
             {
                 case STRING_ROCK.toLowerCase():
                 {
@@ -174,4 +174,81 @@ function playGame(rounds)
     console.log("Computer Score: " + computerScore);
 }
 
-playGame(5);
+//playGame(5);
+
+let roundCntr = 0;
+let roundName = "";
+let winner = 0;
+
+function uiPlayRound(humanChoice)
+{
+    if (roundCntr < 5)
+    {
+        let score = playRound(humanChoice, getComputerChoice());
+        
+        if (score > 0)
+        {
+            roundName = "You";
+            winner++;
+        }
+        else if (score < 0)
+        {
+            roundName = "Computer";
+            winner--;
+        }
+        else
+            roundName = "Tie";
+
+        roundCntr++;
+    }
+
+    let gameWinner = "";
+    if (roundCntr == 5)
+    {
+        if (winner > 0)
+            gameWinner = "You win!";
+        else if (winner < 0)
+            gameWinner = "Computer Wins!"
+        else
+            gameWinner = "Its a Tie";
+    }
+
+    console.log(winner);
+    
+    return [roundName, roundCntr, gameWinner]
+}
+
+const btnRock = document.querySelector("#btnRock");
+const btnPaper = document.querySelector("#btnPaper");
+const btnScissor = document.querySelector("#btnScissors");
+const cntrGame = document.querySelector(".game-number");
+const roundWinner = document.querySelector(".winner-name");
+const gameWinner = document.createElement("h2");
+const displayDiv = document.querySelector(".display");
+
+function CheckEnd(results) {
+    roundWinner.textContent = results[0];
+    cntrGame.textContent = results[1];
+
+    if (results[2] != "")
+    {
+        gameWinner.textContent = `Game Over, ${results[2]}!`;
+        displayDiv.appendChild(gameWinner);
+    }
+}
+
+function Rock(event) {
+    CheckEnd(uiPlayRound(STRING_ROCK));
+}
+
+function Paper(event) {
+    CheckEnd(uiPlayRound(STRING_PAPER));
+}
+
+function Scissors(event) {
+    CheckEnd(uiPlayRound(STRING_SCISSORS));
+}
+
+btnRock.addEventListener("click", Rock);
+btnPaper.addEventListener("click", Paper);
+btnScissor.addEventListener("click", Scissors);
